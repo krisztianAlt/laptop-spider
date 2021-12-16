@@ -1,0 +1,28 @@
+@charset "UTF-8";
+
+@font-face{
+    font-family: 'Courier Prime';
+    src: url local('\fonts\CourierPrime-Regular.ttf') format('truetype');
+    src: url local('\fonts\CourierPrime-Bold.ttf') format('truetype');
+}
+
+* {
+	box-sizing: border-box;
+}
+
+html, body {
+	height: 100%;
+    background-color:tan;
+    font-family: 'Courier Prime', monospace;
+}
+
+.infotext-container h2{
+    text-align: center;
+    margin: 5% auto;
+    font-weight: bold;
+}
+
+.error-container {
+    text-align: center;
+    margin: 5% auto;
+}
