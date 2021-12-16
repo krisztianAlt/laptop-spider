@@ -7,13 +7,44 @@
         url: string
     }
 
-2. Starting program in dev environment (see in package.json): npm run dev
-3. Sample for using Promise: https://www.geeksforgeeks.org/node-js-promise-chaining/
-4. Promises: https://newbedev.com/while-loop-with-promises
+2. Tipps & infos:
+    - Starting program in dev environment (see in package.json): npm run dev
+    - Sample for using Promise: https://www.geeksforgeeks.org/node-js-promise-chaining/
+    - Promises (recursion): https://newbedev.com/while-loop-with-promises
 */
 
 const request = require('request');
 const cheerio = require('cheerio');
+const express = require("express");
+const favicon = require('serve-favicon');
+const app = express();
+const bodyParser = require("body-parser");
+const fs = require("fs");
+
+// TO DO: Favicon
+
+app.use(express.static("public"));
+app.use(favicon(__dirname + '/public/images/favicon.ico'));
+
+app.get("/", (req, res) => {
+    res.sendFile(__dirname + "/templates/main.html");
+});
+
+app.get("/laptops", (req, res) => {
+    /*
+    fs.readFile("./data/products.json", (err, file) => {
+        res.send(JSON.parse(file));
+    });
+    */
+    res.send("Here comes laptop datas...");
+});
+
+app.get('*', function(req, res){
+    res.status(404);
+    res.sendFile(__dirname + "/templates/404.html");
+});
+
+
 
 const MAIN_PAGE_URL = "https://www.mediamarkt.hu";
 const URL_SCHEME = "https:";
@@ -86,6 +117,8 @@ function extractLaptopDataFromHTMLCode(pageBody, laptopDatas) {
     return (nextPageURL);
 }
 
+/*
+// Crawling organizer section:
 let laptopDatas = [];
 let categoryPageIsNeeded = true;
 getLaptopData(MAIN_PAGE_URL, laptopDatas, categoryPageIsNeeded).then((laptopDatas) => {
@@ -94,3 +127,6 @@ getLaptopData(MAIN_PAGE_URL, laptopDatas, categoryPageIsNeeded).then((laptopData
     console.log("Problem occured.");
     console.error(err.message);
 })
+*/
+
+app.listen(8080);
