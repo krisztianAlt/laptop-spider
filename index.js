@@ -33,9 +33,13 @@ const getLaptopData = (nextURL, laptopDatas, categoryPageIsNeeded) =>
     getHTMLCode(nextURL).then((pageBody) => {
         let nextPageURL;
         if (categoryPageIsNeeded) {
-            nextPageURL = extractLaptopCategoryURL(pageBody);
-            console.log("Category page is extracted: ", nextPageURL);
-            return getLaptopData(nextPageURL, laptopDatas, false);
+            try {
+                nextPageURL = extractLaptopCategoryURL(pageBody);  
+                console.log("Category page is extracted: ", nextPageURL);
+                return getLaptopData(nextPageURL, laptopDatas, false);
+            } catch (err) {
+                throw new Error(err.message);
+            }
         } else {
             console.log("Crawling: ", nextURL);
             nextPageURL = extractLaptopDataFromHTMLCode(pageBody, laptopDatas);
@@ -56,7 +60,7 @@ function extractLaptopCategoryURL(mainPageBody) {
                             find("div[class='site-navigation2__panel site-navigation2__panel--level-3'] li[data-tracking-nav='Laptop, notebook'] a").
                             attr("href");
     if (laptopCategoryURL === undefined) {
-        return reject("Category page's URL not found.")
+        throw new Error("Category URL is not found.");
     }
     return (URL_SCHEME + laptopCategoryURL);
 }
@@ -88,5 +92,5 @@ getLaptopData(MAIN_PAGE_URL, laptopDatas, categoryPageIsNeeded).then((laptopData
     console.log('Size of laptop data package: ', laptopDatas.length);
 }).catch((err) => {
     console.log("Problem occured.");
-    console.error(err);
+    console.error(err.message);
 })
