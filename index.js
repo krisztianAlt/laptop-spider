@@ -16,12 +16,11 @@
 const request = require('request');
 const cheerio = require('cheerio');
 const express = require("express");
-const favicon = require('serve-favicon');
 const app = express();
-const bodyParser = require("body-parser");
-const fs = require("fs");
+const favicon = require('serve-favicon');
 
-// TO DO: Favicon
+const MAIN_PAGE_URL = "https://www.mediamarkt.h";
+const URL_SCHEME = "https:";
 
 app.use(express.static("public"));
 app.use(favicon(__dirname + '/public/images/favicon.ico'));
@@ -31,23 +30,24 @@ app.get("/", (req, res) => {
 });
 
 app.get("/laptops", (req, res) => {
-    /*
-    fs.readFile("./data/products.json", (err, file) => {
-        res.send(JSON.parse(file));
-    });
-    */
-    res.send("Here comes laptop datas...");
+    let laptopDatas = [];
+    let categoryPageIsNeeded = true;
+    getLaptopData(MAIN_PAGE_URL, laptopDatas, categoryPageIsNeeded).then((laptopDatas) => {
+        console.log('Size of laptop data package: ', laptopDatas.length);
+        res.status(200);
+        res.send(JSON.stringify(laptopDatas));
+    }).catch((err) => {
+        console.log("Problem occured.");
+        console.error(err.message);
+        res.status(404);
+        res.send({"error": "Sorry, problem occured. Please, try later!"});
+    })
 });
 
 app.get('*', function(req, res){
     res.status(404);
     res.sendFile(__dirname + "/templates/404.html");
 });
-
-
-
-const MAIN_PAGE_URL = "https://www.mediamarkt.hu";
-const URL_SCHEME = "https:";
 
 const getHTMLCode = (url) => {
     return new Promise((resolve, reject) => {

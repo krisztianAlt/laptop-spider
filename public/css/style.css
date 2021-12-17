@@ -18,11 +18,34 @@ html, body {
 
 .infotext-container h2{
     text-align: center;
-    margin: 5% auto;
+    margin: 4% auto 2% auto;
     font-weight: bold;
 }
 
-.error-container {
+.infotext-container p{
+    max-width: 50rem;
+    text-align: justify;
+    margin: auto;
+}
+
+.button-div{
+    margin: 1% auto 1% auto;
+    text-align: center;
+}
+
+.spinner-div{
+    text-align: justify;
+    margin: auto;
+    max-width: 10rem;
+}
+
+.error-message-container{
+    text-align: justify;
+    margin: auto;
+    max-width: 20rem;
+}
+
+.error-page-container {
     text-align: center;
     margin: 5% auto;
 }
