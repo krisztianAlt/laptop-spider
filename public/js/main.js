@@ -1,6 +1,26 @@
+function createAnyDOMElement(name, attributes){
+    let newElement = document.createElement(name);
+    for (let key in attributes){
+        newElement.setAttribute(key, attributes[key]);
+    }
+    return newElement;
+};
+
 function showErrorMessage(err){
     let errorMessageContainer = document.querySelector(".error-message-container");
-    
+    let alertDiv = createAnyDOMElement("div", {
+        "class": "alert alert-warning alert-dismissible fade show",
+        "role": "alert"
+    });
+    alertDiv.innerText = err;
+    let closeButton = createAnyDOMElement("button", {
+        "type": "button",
+        "class": "btn-close",
+        "data-bs-dismiss": "alert",
+        "aria-label": "Close"
+    });
+    alertDiv.appendChild(closeButton);
+    errorMessageContainer.appendChild(alertDiv);
 }
 
 function showDataInTable(laptopDataPackage){

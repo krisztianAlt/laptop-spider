@@ -42,7 +42,7 @@ html, body {
 .error-message-container{
     text-align: justify;
     margin: auto;
-    max-width: 20rem;
+    max-width: 30rem;
 }
 
 .error-page-container {
