@@ -4,6 +4,7 @@
     font-family: 'Courier Prime';
     src: url local('\fonts\CourierPrime-Regular.ttf') format('truetype');
     src: url local('\fonts\CourierPrime-Bold.ttf') format('truetype');
+    src: url local('\fonts\CourierPrime-Italic.ttf') format('truetype');
 }
 
 * {
@@ -28,8 +29,18 @@ html, body {
     margin: auto;
 }
 
+.infotext-container p a {
+    text-decoration: none;
+    color: #4d7e7f;
+    font-style: italic;
+}
+
+.infotext-container p a:hover {
+    color: #82b7b8;
+}
+
 .button-div {
-    margin: 1% auto 1% auto;
+    margin: 2% auto 1% auto;
     text-align: center;
 }
 
