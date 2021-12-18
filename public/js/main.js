@@ -28,17 +28,17 @@ function showErrorMessage(err){
     errorMessageContainer.appendChild(alertDiv);
 }
 
+function prepareShowingTable(laptopDataPackage) {
+    showTableInfoText();
+    initSortingStatus();
+    laptopDataPackage.sort(compareByName);
+    showDataInTable(laptopDataPackage);
+    initSortingButtons(laptopDataPackage);
+}
+
 function showDataInTable(laptopDataPackage){
     let tableBody = document.querySelector(".table-container tbody");
     tableBody.innerHTML = "";
-
-    let tableInfo = document.querySelectorAll(".table-container p");
-    console.log(tableInfo.length);
-    for (let i=0; i<tableInfo.length; i++) {
-        tableInfo[i].classList.remove("visually-hidden");
-    }
-    initSortingStatus();
-    laptopDataPackage.sort(compareByName);
 
     for (let i=0; i<laptopDataPackage.length; i++){
         let row = createAnyDOMElement("tr");
@@ -56,6 +56,13 @@ function showDataInTable(laptopDataPackage){
         tableBody.appendChild(row);
     }
 
+}
+
+function showTableInfoText() {
+    let tableInfo = document.querySelectorAll(".table-container p");
+    for (let i=0; i<tableInfo.length; i++) {
+        tableInfo[i].classList.remove("visually-hidden");
+    }
 }
 
 function compareByName(a, b) {
@@ -107,6 +114,49 @@ function initSortingStatus() {
     }
 }
 
+function initSortingButtons(laptopDataPackage) {
+    let nameArrow = document.querySelector("#name-header-arrow");
+    nameArrow.innerHTML = DOWNARROW;
+    nameArrow.addEventListener("click", function(){
+        if (sortingStatus.sortingBy === "name" && sortingStatus.direction === "asc"){
+            nameArrow.innerHTML = UPARROW;
+            sortingStatus.direction = "desc";
+        } else if (sortingStatus.sortingBy === "name" && sortingStatus.direction === "desc") {
+            nameArrow.innerHTML = DOWNARROW;
+            sortingStatus.direction = "asc";
+        } else if (sortingStatus.sortingBy === "price") {
+            priceArrow.innerHTML = DOWNARROW;
+            priceArrow.classList.add("inactive");
+            nameArrow.classList.remove("inactive");
+            sortingStatus.sortingBy = "name"
+            sortingStatus.direction = "asc";
+        }
+        laptopDataPackage.sort(compareByName);
+        showDataInTable(laptopDataPackage);
+    });
+
+    let priceArrow = document.querySelector("#price-header-arrow");
+    priceArrow.classList.add("inactive");
+    priceArrow.innerHTML = DOWNARROW;
+    priceArrow.addEventListener("click", function(){
+        if (sortingStatus.sortingBy === "price" && sortingStatus.direction === "asc"){
+            priceArrow.innerHTML = UPARROW;
+            sortingStatus.direction = "desc";
+        } else if (sortingStatus.sortingBy === "price" && sortingStatus.direction === "desc") {
+            priceArrow.innerHTML = DOWNARROW;
+            sortingStatus.direction = "asc";
+        } else if (sortingStatus.sortingBy === "name") {
+            nameArrow.innerHTML = DOWNARROW;
+            nameArrow.classList.add("inactive");
+            priceArrow.classList.remove("inactive");
+            sortingStatus.sortingBy = "price"
+            sortingStatus.direction = "asc";
+        }
+        laptopDataPackage.sort(compareByPrice);
+        showDataInTable(laptopDataPackage);
+    });
+}
+
 function formatPrice(price){
     let formattedPrice = "";
     let digitsInABlockOfThree = 1;
@@ -135,8 +185,8 @@ startScrappingButton.addEventListener("click", function(ev){
         url: "https://www.mediamarkt.hu/hu/product/_microsoft-surface-lapt…top-13-5-2256x1504-ryzen5-8gb-256-gb-ssd-win10h-1354709.html"
     },
     {
-        name: "MICROSOFT Baszógép",
-        price: "315900",
+        name: "MICROSOFT Alapgép",
+        price: "175900",
         url: "https://www.mediamarkt.hu/hu/product/_microsoft-surface-lapt…top-13-5-2256x1504-ryzen5-8gb-256-gb-ssd-win10h-1354709.html"
     },
     {
@@ -145,7 +195,7 @@ startScrappingButton.addEventListener("click", function(ev){
         url:"https://www.mediamarkt.hu/hu/product/_hp-250-g7-1l3l8ea-ez%C…BCst-laptop-15-6-fhd-core-i3-8gb-256-gb-ssd-dos-1357828.html"
     }]
     
-    showDataInTable(sampleDatas);
+    prepareShowingTable(sampleDatas);
     startScrappingButton.removeAttribute("disabled");
     spinner.classList.add("visually-hidden");
     
@@ -154,7 +204,7 @@ startScrappingButton.addEventListener("click", function(ev){
         url: '/laptops',
         type: 'GET',
         success: function(response) {
-            showDataInTable(JSON.parse(response));
+            prepareShowingTable(JSON.parse(response));
         },
         error: function(err) {
             let errorMessage = JSON.parse(err.responseText);
