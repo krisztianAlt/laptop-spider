@@ -19,7 +19,7 @@ const express = require("express");
 const app = express();
 const favicon = require('serve-favicon');
 
-const MAIN_PAGE_URL = "https://www.mediamarkt.h";
+const MAIN_PAGE_URL = "https://www.mediamarkt.hu";
 const URL_SCHEME = "https:";
 
 app.use(express.static("public"));
