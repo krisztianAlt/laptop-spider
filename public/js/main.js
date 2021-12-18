@@ -32,8 +32,11 @@ function showDataInTable(laptopDataPackage){
     let tableBody = document.querySelector(".table-container tbody");
     tableBody.innerHTML = "";
 
-    let sortingInfo = document.querySelector(".table-container p");
-    sortingInfo.classList.remove("visually-hidden");
+    let tableInfo = document.querySelectorAll(".table-container p");
+    console.log(tableInfo.length);
+    for (let i=0; i<tableInfo.length; i++) {
+        tableInfo[i].classList.remove("visually-hidden");
+    }
     initSortingStatus();
     laptopDataPackage.sort(compareByName);
 
@@ -47,6 +50,9 @@ function showDataInTable(laptopDataPackage){
         priceCell.innerText = formatPrice(laptopDataPackage[i].price) + " Ft";
         row.appendChild(nameCell);
         row.appendChild(priceCell);
+        row.addEventListener("click", function(){
+            window.open(laptopDataPackage[i].url);
+        });
         tableBody.appendChild(row);
     }
 
