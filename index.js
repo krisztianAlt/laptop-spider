@@ -19,6 +19,8 @@ const express = require("express");
 const app = express();
 const favicon = require('serve-favicon');
 
+const port = process.env.PORT || 8080;
+
 const MAIN_PAGE_URL = "https://www.mediamarkt.hu";
 const URL_SCHEME = "https:";
 
@@ -120,4 +122,4 @@ function extractLaptopDataFromHTMLCode(pageBody, laptopDatas) {
     return (nextPageURL);
 }
 
-app.listen(8080);
+app.listen(port);
