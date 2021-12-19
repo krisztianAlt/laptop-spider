@@ -47,6 +47,7 @@ function showDataInTable(laptopDataPackage){
         let priceCell = createAnyDOMElement("td", {
             "align": "right"
         });
+        priceCell.classList.add("price-cell");
         priceCell.innerText = formatPrice(laptopDataPackage[i].price) + " Ft";
         row.appendChild(nameCell);
         row.appendChild(priceCell);
@@ -174,32 +175,10 @@ function formatPrice(price){
 
 let startScrappingButton = document.querySelector(".button-div button");
 startScrappingButton.addEventListener("click", function(ev){
-    // ev.preventDefault();
     startScrappingButton.setAttribute("disabled", "disabled");
     let spinner = document.querySelector(".spinner-div");
     spinner.classList.remove("visually-hidden");
     
-    let sampleDatas = [{
-        name: "MICROSOFT Surface Laptop 4 5PB-00024 Szürke laptop (13,5\" (2256x1504)/Ryzen5/8GB/256 GB SSD/Win10H)",
-        price: "4159999",
-        url: "https://www.mediamarkt.hu/hu/product/_microsoft-surface-lapt…top-13-5-2256x1504-ryzen5-8gb-256-gb-ssd-win10h-1354709.html"
-    },
-    {
-        name: "MICROSOFT Alapgép",
-        price: "175900",
-        url: "https://www.mediamarkt.hu/hu/product/_microsoft-surface-lapt…top-13-5-2256x1504-ryzen5-8gb-256-gb-ssd-win10h-1354709.html"
-    },
-    {
-        name: "HP 250 G7 1L3L8EA Ezüst laptop (15,6\" FHD/Core i3/8GB/256 GB SSD/DOS)",
-        price: "253259",
-        url:"https://www.mediamarkt.hu/hu/product/_hp-250-g7-1l3l8ea-ez%C…BCst-laptop-15-6-fhd-core-i3-8gb-256-gb-ssd-dos-1357828.html"
-    }]
-    
-    prepareShowingTable(sampleDatas);
-    startScrappingButton.removeAttribute("disabled");
-    spinner.classList.add("visually-hidden");
-    
-    /*
     $.ajax({
         url: '/laptops',
         type: 'GET',
@@ -214,6 +193,5 @@ startScrappingButton.addEventListener("click", function(ev){
             startScrappingButton.removeAttribute("disabled");
             spinner.classList.add("visually-hidden");
         }
-    });
-    */
+    })
 })
