@@ -107,26 +107,17 @@ function extractLaptopDataFromHTMLCode(pageBody, laptopDatas) {
             productPrice = productPrice.slice(0, productPrice.indexOf("\n"));
         }
         let productURL = MAIN_PAGE_URL + $(this).find("div[class='content '] h2 a").attr("href");
-        let laptop = {
-            name: productName,
-            price: productPrice,
-            url: productURL
+        
+        if (productName.length > 1){
+            let laptop = {
+                name: productName,
+                price: productPrice,
+                url: productURL
+            }
+            laptopDatas.push(laptop);
         }
-        laptopDatas.push(laptop);
     });
     return (nextPageURL);
 }
-
-/*
-// Crawling organizer section:
-let laptopDatas = [];
-let categoryPageIsNeeded = true;
-getLaptopData(MAIN_PAGE_URL, laptopDatas, categoryPageIsNeeded).then((laptopDatas) => {
-    console.log('Size of laptop data package: ', laptopDatas.length);
-}).catch((err) => {
-    console.log("Problem occured.");
-    console.error(err.message);
-})
-*/
 
 app.listen(8080);
