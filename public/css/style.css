@@ -44,10 +44,16 @@ html, body {
     text-align: center;
 }
 
-.spinner-div {
+.spinner-div  {
     text-align: justify;
     margin: auto;
     max-width: 10rem;
+}
+
+.info-message-container {
+    text-align: justify;
+    margin: 1% auto 0 auto;
+    max-width: 20rem;
 }
 
 .error-message-container {
