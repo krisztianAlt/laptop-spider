@@ -31,7 +31,12 @@ app.ui = {
         errorMessageContainer.appendChild(alertDiv);
     },
     
-     prepareShowingTable: function(laptopDataPackage) {
+    showCrawingStatusMessage: function(message){
+        let crawlingInfoArea = document.querySelector(".info-message-container");
+        crawlingInfoArea.innerText = message;
+    },
+
+    prepareShowingTable: function(laptopDataPackage) {
         app.ui.showTableInfoText();
         app.ui.initSortingStatus();
         laptopDataPackage.sort(app.ui.compareByName);
@@ -196,11 +201,29 @@ app.ui = {
         spinner.classList.add("visually-hidden");
     },
 
+    showCrawlingInfoArea: function() {
+        let crawlingInfoArea = document.querySelector(".info-message-container");
+        crawlingInfoArea.classList.remove("visually-hidden");
+    },
+
+    hideCrawlingInfoArea: function() {
+        let crawlingInfoArea = document.querySelector(".info-message-container");
+        crawlingInfoArea.innerText = "";
+        crawlingInfoArea.classList.add("visually-hidden");
+    },
+
+    resetInfoArea(){
+        app.ui.activateStartButton();
+        app.ui.hideSpinner();
+        app.ui.hideCrawlingInfoArea();
+    },
+
     initCrawlingButton: function(){
         let startScrappingButton = document.querySelector(".button-div button");
         startScrappingButton.addEventListener("click", function(ev){
             app.ui.deactivateStartButton();
             app.ui.showSpinner();
+            app.ui.showCrawlingInfoArea();
             app.data_handler.startCrawling();
         })
     }
