@@ -125,45 +125,54 @@ app.ui = {
     
     initSortingButtons: function(laptopDataPackage) {
         let nameArrow = document.querySelector("#name-header-arrow");
-        nameArrow.innerHTML = DOWNARROW;
-        nameArrow.addEventListener("click", function(){
-            if (sortingStatus.sortingBy === "name" && sortingStatus.direction === "asc"){
-                nameArrow.innerHTML = UPARROW;
-                sortingStatus.direction = "desc";
-            } else if (sortingStatus.sortingBy === "name" && sortingStatus.direction === "desc") {
-                nameArrow.innerHTML = DOWNARROW;
-                sortingStatus.direction = "asc";
-            } else if (sortingStatus.sortingBy === "price") {
-                priceArrow.innerHTML = DOWNARROW;
-                priceArrow.classList.add("inactive");
-                nameArrow.classList.remove("inactive");
-                sortingStatus.sortingBy = "name"
-                sortingStatus.direction = "asc";
-            }
-            laptopDataPackage.sort(app.ui.compareByName);
-            app.ui.showDataInTable(laptopDataPackage);
-        });
-    
         let priceArrow = document.querySelector("#price-header-arrow");
+        let eventListenersNeeded = false;
+        if (nameArrow.innerHTML.length < 1 && priceArrow.innerHTML.length < 1){
+            eventListenersNeeded = true;
+        }
+        nameArrow.classList.remove("inactive");
         priceArrow.classList.add("inactive");
+        nameArrow.innerHTML = DOWNARROW;
         priceArrow.innerHTML = DOWNARROW;
-        priceArrow.addEventListener("click", function(){
-            if (sortingStatus.sortingBy === "price" && sortingStatus.direction === "asc"){
-                priceArrow.innerHTML = UPARROW;
-                sortingStatus.direction = "desc";
-            } else if (sortingStatus.sortingBy === "price" && sortingStatus.direction === "desc") {
-                priceArrow.innerHTML = DOWNARROW;
-                sortingStatus.direction = "asc";
-            } else if (sortingStatus.sortingBy === "name") {
-                nameArrow.innerHTML = DOWNARROW;
-                nameArrow.classList.add("inactive");
-                priceArrow.classList.remove("inactive");
-                sortingStatus.sortingBy = "price"
-                sortingStatus.direction = "asc";
-            }
-            laptopDataPackage.sort(app.ui.compareByPrice);
-            app.ui.showDataInTable(laptopDataPackage);
-        });
+
+        if (eventListenersNeeded) {
+            console.log("Adding event listeners.");
+            nameArrow.addEventListener("click", function(){
+                if (sortingStatus.sortingBy === "name" && sortingStatus.direction === "asc"){
+                    nameArrow.innerHTML = UPARROW;
+                    sortingStatus.direction = "desc";
+                } else if (sortingStatus.sortingBy === "name" && sortingStatus.direction === "desc") {
+                    nameArrow.innerHTML = DOWNARROW;
+                    sortingStatus.direction = "asc";
+                } else if (sortingStatus.sortingBy === "price") {
+                    priceArrow.innerHTML = DOWNARROW;
+                    priceArrow.classList.add("inactive");
+                    nameArrow.classList.remove("inactive");
+                    sortingStatus.sortingBy = "name"
+                    sortingStatus.direction = "asc";
+                }
+                laptopDataPackage.sort(app.ui.compareByName);
+                app.ui.showDataInTable(laptopDataPackage);
+            });
+
+            priceArrow.addEventListener("click", function(){
+                if (sortingStatus.sortingBy === "price" && sortingStatus.direction === "asc"){
+                    priceArrow.innerHTML = UPARROW;
+                    sortingStatus.direction = "desc";
+                } else if (sortingStatus.sortingBy === "price" && sortingStatus.direction === "desc") {
+                    priceArrow.innerHTML = DOWNARROW;
+                    sortingStatus.direction = "asc";
+                } else if (sortingStatus.sortingBy === "name") {
+                    nameArrow.innerHTML = DOWNARROW;
+                    nameArrow.classList.add("inactive");
+                    priceArrow.classList.remove("inactive");
+                    sortingStatus.sortingBy = "price"
+                    sortingStatus.direction = "asc";
+                }
+                laptopDataPackage.sort(app.ui.compareByPrice);
+                app.ui.showDataInTable(laptopDataPackage);
+            });
+        }
     },
     
     formatPrice: function(price){
