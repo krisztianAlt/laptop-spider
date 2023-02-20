@@ -64,8 +64,9 @@ function extractLaptopCategoryURL(mainPageBody) {
 
 function extractLaptopDataFromHTMLCode(pageBody, laptopDatas) {
     let $ = cheerio.load(pageBody);
-
-    console.log("extractLaptopDataFromHTMLCode function, HTM code: " + $("ul[class='pagination']"));
+    
+    console.log("extractLaptopDataFromHTMLCode function, pageBody variable: " + pageBody);
+    console.log("extractLaptopDataFromHTMLCode function, HTML code: " + $("ul[class='pagination']"));
     
     let nextPageURL = $("ul[class='pagination']").first().find("li[class='pagination-next'] a").attr("href");
     
