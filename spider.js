@@ -10,8 +10,7 @@ const crawlingProcesses = [];
 const getHTMLCode = (url) => {
     return new Promise((resolve, reject) => {
         request({headers: { 'Accept': '*/*',
-                            'Connection': 'keep-alive',
-                            'Cache-Control': 'no-cache'
+                            'Connection': 'keep-alive'
                         },
                 url}, function (err, res, body) {
             console.log("URL: " + url);
