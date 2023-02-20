@@ -10,6 +10,7 @@ const crawlingProcesses = [];
 const getHTMLCode = (url) => {
     return new Promise((resolve, reject) => {
         request(url, function (err, res, body) {
+            console.log("URL: " + url);
             console.log("We are in getHTMLCode. Status: " + res['statusCode']);
             console.log(res['statusMessage']);
             console.log("Response headers: ");
