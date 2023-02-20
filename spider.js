@@ -20,6 +20,7 @@ const getHTMLCode = (url) => {
             console.log("Response headers: ");
             console.log(res['headers']);
             if (res['statusCode'] == '400') {
+                console.log(req['headers']);
                 console.log(res['body']);
             }
 
