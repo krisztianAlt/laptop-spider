@@ -10,10 +10,12 @@ const crawlingProcesses = [];
 const getHTMLCode = (url) => {
     return new Promise((resolve, reject) => {
         request(url, function (err, res, body) {
+            console.log("We are in getHTMLCode. Response body: ");
+            console.log(res['body']);
             if (err) {
                 return reject (err);
             }
-            console.log("We are in getHTMLCode, no error. Body: " + body);
+            console.log("We are in getHTMLCode, no error.");
             resolve(body);
         })
     })
@@ -66,12 +68,12 @@ function extractLaptopCategoryURL(mainPageBody) {
 function extractLaptopDataFromHTMLCode(pageBody, laptopDatas) {
     let $ = cheerio.load(pageBody);
     
-    console.log("extractLaptopDataFromHTMLCode function, pageBody variable: " + pageBody);
-    console.log("extractLaptopDataFromHTMLCode function, HTML code: " + $("ul[class='pagination']"));
+    // console.log("extractLaptopDataFromHTMLCode function, pageBody variable: " + pageBody);
+    // console.log("extractLaptopDataFromHTMLCode function, HTML code: " + $("ul[class='pagination']"));
     
     let nextPageURL = $("ul[class='pagination']").first().find("li[class='pagination-next'] a").attr("href");
     
-    console.log("extractLaptopDataFromHTMLCode function, value of nextPageURL: " + nextPageURL);
+    // console.log("extractLaptopDataFromHTMLCode function, value of nextPageURL: " + nextPageURL);
     
     $("ul[class='products-list'] li div[class='product-wrapper']").each(function(){
         let productName = $(this).find("div[class='content '] h2 a").text().trim();
