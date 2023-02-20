@@ -12,6 +12,10 @@ const getHTMLCode = (url) => {
         request(url, function (err, res, body) {
             console.log("URL: " + url);
             console.log("We are in getHTMLCode. Status: " + res['statusCode']);
+            // console.log(Object.keys(res['request']));
+            let req = res['request'];
+            console.log('URI: ');
+            console.log(req['uri']);
             console.log(res['statusMessage']);
             console.log("Response headers: ");
             console.log(res['headers']);
