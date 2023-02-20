@@ -19,6 +19,10 @@ const getHTMLCode = (url) => {
             console.log(res['statusMessage']);
             console.log("Response headers: ");
             console.log(res['headers']);
+            if (res['statusCode'] == '400') {
+                console.log(res['body']);
+            }
+
             if (err) {
                 return reject (err);
             }
