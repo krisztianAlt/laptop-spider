@@ -2,7 +2,7 @@ const request = require('request');
 const cheerio = require('cheerio');
 const { response } = require('express');
 
-const MAIN_PAGE_URL = "https://mediamarkt.hu";
+const MAIN_PAGE_URL = "https://www.mediamarkt.hu";
 const URL_SCHEME = "https:";
 
 const crawlingProcesses = [];
