@@ -10,8 +10,8 @@ const crawlingProcesses = [];
 const getHTMLCode = (url) => {
     return new Promise((resolve, reject) => {
         request(url, function (err, res, body) {
-            console.log("We are in getHTMLCode. Response body: ");
-            console.log(res['body']);
+            console.log("We are in getHTMLCode. Response headers: ");
+            console.log(res['headers']);
             if (err) {
                 return reject (err);
             }
