@@ -13,6 +13,7 @@ const getHTMLCode = (url) => {
             if (err) {
                 return reject (err);
             }
+            console.log("We are in getHTMLCode, no error. Body: " + body);
             resolve(body);
         })
     })
