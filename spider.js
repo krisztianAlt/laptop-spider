@@ -64,7 +64,13 @@ function extractLaptopCategoryURL(mainPageBody) {
 
 function extractLaptopDataFromHTMLCode(pageBody, laptopDatas) {
     let $ = cheerio.load(pageBody);
+
+    console.log("extractLaptopDataFromHTMLCode function, HTM code: " + $("ul[class='pagination']"));
+    
     let nextPageURL = $("ul[class='pagination']").first().find("li[class='pagination-next'] a").attr("href");
+    
+    console.log("extractLaptopDataFromHTMLCode function, value of nextPageURL: " + nextPageURL);
+    
     $("ul[class='products-list'] li div[class='product-wrapper']").each(function(){
         let productName = $(this).find("div[class='content '] h2 a").text().trim();
         let productPrice = $(this).find("aside[class='product-price alt'] div[class='price-box'] div").text().trim();
