@@ -9,7 +9,11 @@ const crawlingProcesses = [];
 
 const getHTMLCode = (url) => {
     return new Promise((resolve, reject) => {
-        request({headers: { 'kurva': 'anyad'}, url}, function (err, res, body) {
+        request({headers: { 'Accept': '*/*',
+                            'Connection': 'keep-alive',
+                            'Cache-Control': 'no-cache'
+                        },
+                url}, function (err, res, body) {
             console.log("URL: " + url);
             console.log("We are in getHTMLCode. Status: " + res['statusCode']);
             // console.log(Object.keys(res['request']));
@@ -19,7 +23,7 @@ const getHTMLCode = (url) => {
             console.log("Request headers: ");
             console.log(req['headers']);
             console.log(req['originalHostHeaderName']);
-            console.log(req['agent']);
+            console.log(req['method']);
             console.log(res['statusMessage']);
             console.log("Response headers: ");
             console.log(res['headers']);
