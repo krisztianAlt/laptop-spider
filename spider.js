@@ -3,6 +3,7 @@ const cheerio = require('cheerio');
 const { response } = require('express');
 
 const MAIN_PAGE_URL = "https://www.mediamarkt.hu";
+const PROXY_URL = "http://20.241.236.196:3128";
 const URL_SCHEME = "https:";
 
 const crawlingProcesses = [];
@@ -40,6 +41,39 @@ const getHTMLCode = (url) => {
     })
 }
 
+const getHTMLCodeViaProxy = (url) => {
+    return new Promise((resolve, reject) => {
+        request({url,
+                'method': 'GET',
+                'proxy': PROXY_URL
+        }, function (err, res, body) {
+            if (err) {
+                return reject (err);
+            }
+
+            console.log("URL: " + url);
+            console.log("We are in getHTMLCode. Status: " + res['statusCode']);
+            // console.log(Object.keys(res['request']));
+            let req = res['request'];
+            console.log('URI: ');
+            console.log(req['uri']);
+            console.log("Request headers: ");
+            console.log(req['headers']);
+            console.log(req['originalHostHeaderName']);
+            console.log(req['method']);
+            console.log(res['statusMessage']);
+            console.log("Response headers: ");
+            console.log(res['headers']);
+            if (res['statusCode'] == '400') {
+                console.log(req['headers']);
+                console.log(res['body']);
+            }
+            console.log("We are in getHTMLCode, no error.");
+            resolve(body);
+        })
+    })
+}
+
 const getLaptopData = (nextURL, processId, laptopDatas, categoryPageIsNeeded) => 
     getHTMLCode(nextURL).then((pageBody) => {
         let nextPageURL;
@@ -68,6 +102,38 @@ const getLaptopData = (nextURL, processId, laptopDatas, categoryPageIsNeeded) =>
                 }
                 nextPageURL = MAIN_PAGE_URL + nextPageURL;
                 return getLaptopData(nextPageURL, processId, laptopDatas, false);
+            }
+        }
+    });
+
+const getLaptopDataViaProxy = (nextURL, processId, laptopDatas, categoryPageIsNeeded) => 
+    getHTMLCodeViaProxy(nextURL).then((pageBody) => {
+        let nextPageURL;
+        if (processId === undefined && categoryPageIsNeeded) {
+            let newProcessId = createNewCrawlingProcess(laptopDatas);
+            try {
+                nextPageURL = extractLaptopCategoryURL(pageBody);  
+                console.log("Category page is found: ", nextPageURL);
+                getLaptopDataViaProxy(nextPageURL, newProcessId, laptopDatas, false);
+                return ({"id": newProcessId, "message": "Laptop category page is found, crawling started."});
+            } catch (err) {
+                throw new Error(err.message);
+            }
+        } else {
+            let process = getCrawlingProcessById(processId);            
+            console.log("Crawling: ", nextURL);
+            nextPageURL = extractLaptopDataFromHTMLCode(pageBody, laptopDatas);
+            process.finished_pages = process.finished_pages + 1;
+            process.laptopDatas = laptopDatas;
+            if (nextPageURL === undefined){
+                process.status = "finished";
+                console.log("Crawling is over.");
+            } else {
+                if (process.status === "started") {
+                    process.status = "in progress";
+                }
+                nextPageURL = MAIN_PAGE_URL + nextPageURL;
+                return getLaptopDataViaProxy(nextPageURL, processId, laptopDatas, false);
             }
         }
     });
@@ -196,6 +262,7 @@ function uuidv4() {
 
 module.exports = {
     getLaptopData,
+    getLaptopDataViaProxy,
     checkCrawlingProcess,
     MAIN_PAGE_URL
 };

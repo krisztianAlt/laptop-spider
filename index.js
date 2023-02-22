@@ -21,6 +21,7 @@ const jsonParser = bodyParser.json();
 
 const spiderModule = require("./spider.js");
 const getLaptopData = spiderModule.getLaptopData;
+const getLaptopDataViaProxy = spiderModule.getLaptopDataViaProxy;
 const checkCrawlingProcess = spiderModule.checkCrawlingProcess;
 const MAIN_PAGE_URL = spiderModule.MAIN_PAGE_URL;
 
@@ -60,6 +61,21 @@ app.get("/laptops", (req, res) => {
         res.send({"error": "Sorry, problem occured. Please, try later!"});
     })
     */
+});
+
+app.get("/laptopsviaproxy", (req, res) => {
+    let laptopDatas = [];
+    let categoryPageIsNeeded = true;
+    getLaptopDataViaProxy(MAIN_PAGE_URL, undefined, laptopDatas, categoryPageIsNeeded).then((response) => {
+        console.log(response.message + " Process ID: " + response.id);
+        res.status(200);
+        res.send(JSON.stringify({"processId" : response.id, "message": response.message}));
+    }).catch((err) => {
+        console.log("Problem occured.");
+        console.error(err.message);
+        res.status(404);
+        res.send(JSON.stringify({"error": "Sorry, problem occured. Please, try later!"}));
+    });
 });
 
 app.post("/checking", jsonParser, (req, res) => {

@@ -39,7 +39,7 @@ html, body {
     color: #82b7b8;
 }
 
-.button-div {
+.button-div, .button-proxy-div {
     margin: 2% auto 1% auto;
     text-align: center;
 }
