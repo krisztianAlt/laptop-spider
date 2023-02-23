@@ -33,7 +33,7 @@ const getHTMLCode = (url) => {
             console.log(proxyNeeded);
             // console.log(Object.keys(res['request']));
             let req = res['request'];
-            if (res['statusCode'] == '400' && !proxyNeeded) {
+            if (res['statusCode'] == '400' && proxyNeeded != true) {
                 console.log('Problem occured. Status code: ');
                 console.log(res['statusCode']);                
                 console.log(req['headers']);
@@ -49,7 +49,7 @@ const getHTMLCode = (url) => {
                 }).catch((err) => {
                     return reject("Proxy servers are not available.");
                 });
-            } else if (res['statusCode'] == '400' && proxyNeeded){
+            } else if (res['statusCode'] == '400' && proxyNeeded == true){
                 proxyNeeded = false;
                 return reject ("The MediaMarkt server or the proxy server is not available.");
             } else {
