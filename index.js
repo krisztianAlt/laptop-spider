@@ -21,8 +21,13 @@ const jsonParser = bodyParser.json();
 
 const spiderModule = require("./spider.js");
 const getLaptopData = spiderModule.getLaptopData;
+const getLaptopDataViaProxy = spiderModule.getLaptopDataViaProxy;
 const checkCrawlingProcess = spiderModule.checkCrawlingProcess;
 const MAIN_PAGE_URL = spiderModule.MAIN_PAGE_URL;
+
+var proxyNeeded = true;
+const proxyModule = require("./proxy_spider.js");
+const getAvailableProxyServer = proxyModule.getAvailableProxyServer;
 
 const port = process.env.PORT || 8080;
 
@@ -36,16 +41,33 @@ app.get("/", (req, res) => {
 app.get("/laptops", (req, res) => {
     let laptopDatas = [];
     let categoryPageIsNeeded = true;
-    getLaptopData(MAIN_PAGE_URL, undefined, laptopDatas, categoryPageIsNeeded).then((response) => {
-        console.log(response.message + " Process ID: " + response.id);
-        res.status(200);
-        res.send(JSON.stringify({"processId" : response.id, "message": response.message}));
-    }).catch((err) => {
-        console.log("Problem occured.");
-        console.error(err.message);
-        res.status(404);
-        res.send(JSON.stringify({"error": "Sorry, problem occured. Please, try later!"}));
-    });
+    if (proxyNeeded) {
+        getAvailableProxyServer().then((availableProxyServer) => {
+            console.log('Available proxy server: ' + availableProxyServer);
+            getLaptopDataViaProxy(MAIN_PAGE_URL, availableProxyServer, undefined, laptopDatas, categoryPageIsNeeded).then((response) => {
+                console.log(response);
+                console.log(response.message + " Process ID: " + response.id);
+                res.status(200);
+                res.send(JSON.stringify({"processId" : response.id, "message": response.message}));
+            }).catch((err) => {
+                console.log("Problem occured. We are in index.js.");
+                console.error(err);
+                res.status(404);
+                res.send(JSON.stringify({"error": "Sorry, problem occured. Please, try again or later!"}));
+            });
+        })
+    } else {
+        getLaptopData(MAIN_PAGE_URL, undefined, laptopDatas, categoryPageIsNeeded).then((response) => {
+            console.log(response.message + " Process ID: " + response.id);
+            res.status(200);
+            res.send(JSON.stringify({"processId" : response.id, "message": response.message}));
+        }).catch((err) => {
+            console.log("Problem occured.");
+            console.error(err);
+            res.status(404);
+            res.send(JSON.stringify({"error": "Sorry, problem occured. Please, try later!"}));
+        });
+    }
 
     /*
     // Old version:
@@ -55,7 +77,7 @@ app.get("/laptops", (req, res) => {
         res.send(JSON.stringify(laptopDatas));
     }).catch((err) => {
         console.log("Problem occured.");
-        console.error(err.message);
+        console.error(err);
         res.status(404);
         res.send({"error": "Sorry, problem occured. Please, try later!"});
     })
@@ -68,7 +90,7 @@ app.post("/checking", jsonParser, (req, res) => {
         let responsePackage = checkCrawlingProcess(crawlingProcessId);
         res.send(JSON.stringify(responsePackage));
     } catch (err) {
-        console.error(err.message);
+        console.error(err);
         res.status(404);
         res.send(JSON.stringify({"error": "Sorry, problem occured. Please, try later!"}));
     }

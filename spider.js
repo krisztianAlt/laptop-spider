@@ -5,62 +5,35 @@ const { response } = require('express');
 const MAIN_PAGE_URL = "https://www.mediamarkt.hu";
 const URL_SCHEME = "https:";
 
-const proxyModule = require("./proxy_spider.js");
-const getAvailableProxyServers = proxyModule.getAvailableProxyServers;
-var proxyNeeded = false;
-var proxyUrl = '';
-
 const crawlingProcesses = [];
 
-const getHTMLCode = (url) => {
-    let actualURL;
-    if (proxyNeeded) {
-        console.log("We are trying with a proxy server: " + proxyUrl);
-        actualURL = {url,
-                    'method': 'GET',
-                    'proxy': proxyUrl};
-    } else {
-        actualURL = url;
-    }
+const getHTMLCode = async (url) => {
+    try {
+        return await new Promise((resolve, reject) => {
+            request(url, function (err, res, body) {
+                if (err) {
+                    return reject(err);
+                }
 
-    return new Promise((resolve, reject) => {
-        console.log(actualURL);
-        request(actualURL, function (err, res, body) {
-            if (err) {
-                return reject (err);
-            }
-            console.log(res['statusCode']);
-            console.log(proxyNeeded);
-            // console.log(Object.keys(res['request']));
-            let req = res['request'];
-            if (res['statusCode'] == '400') {
-                if (!proxyNeeded) {
+                console.log(res['statusCode']);
+                // console.log(Object.keys(res['request']));
+                let req = res['request'];
+                if (res['statusCode'] == '400') {
                     console.log('Problem occured. Status code: ');
-                    console.log(res['statusCode']);                
+                    console.log(res['statusCode']);
                     console.log(req['headers']);
                     console.log(res['body']);
-                    console.log("We are searching for a proxy server...");
-                    proxyNeeded = true;
-                    getAvailableProxyServers().then((response) => {
-                        let availableProxyServers = response;
-                        console.log("We are in spider.js. Available proxy servers: " + availableProxyServers.length.toString());
-                        proxyUrl = availableProxyServers[0];
-                        console.log("We are starting getHTMLCode() function again.")
-                        return getHTMLCode(url);
-                    }).catch((err) => {
-                        return reject("Proxy servers are not available.");
-                    });
-                } else {
-                    proxyNeeded = false;
-                    return reject ("The MediaMarkt server or the proxy server is not available.");
+                    console.log("Maybe search a proxy server.");
+                    return reject("Status code: 400. The MediaMarkt server is not available.");
                 }
-            } else {
-                console.log("Resolve body point");
+
                 resolve(body);
-            }
-        })
-    })
-}
+            });
+        });
+    } catch (err_1) {
+        throw new Error(err_1);
+    }
+};
 
 const getLaptopData = (nextURL, processId, laptopDatas, categoryPageIsNeeded) => 
     getHTMLCode(nextURL).then((pageBody) => {
@@ -73,7 +46,7 @@ const getLaptopData = (nextURL, processId, laptopDatas, categoryPageIsNeeded) =>
                 getLaptopData(nextPageURL, newProcessId, laptopDatas, false);
                 return ({"id": newProcessId, "message": "Laptop category page is found, crawling started."});
             } catch (err) {
-                throw new Error(err.message);
+                throw new Error(err);
             }
         } else {
             let process = getCrawlingProcessById(processId);            
@@ -94,20 +67,54 @@ const getLaptopData = (nextURL, processId, laptopDatas, categoryPageIsNeeded) =>
                 return getLaptopData(nextPageURL, processId, laptopDatas, false);
             }
         }
+    }).catch((err) => {
+        throw new Error(err);
     });
 
-const getLaptopDataViaProxy = (nextURL, processId, laptopDatas, categoryPageIsNeeded) => 
-    getHTMLCodeViaProxy(nextURL).then((pageBody) => {
+const getHTMLCodeViaProxy = (url, availableProxyServer) => {
+    console.log('Current proxy: ' + availableProxyServer);
+    return new Promise((resolve, reject) => {
+        request({
+            'url': url,
+            'method': 'GET',
+            'proxy': availableProxyServer
+        }, function (err, res, body) {
+            console.log("WE ARE IN THE REQUEST FUNCTION");
+            if (err) {
+                return reject (err);
+            }
+            
+            console.log(res['statusCode']);
+            // console.log(Object.keys(res['request']));
+            let req = res['request'];
+            if (res['statusCode'] == '400') {
+                    console.log('Problem occured. Status code: ');
+                    console.log(res['statusCode']);                
+                    console.log(req['headers']);
+                    console.log(res['body']);
+                    console.log("The connection via proxy server is not working.");
+                    return reject ("Status code: 400. The connection via proxy server is not working.");
+            }
+
+            resolve(body);
+        })
+    })
+};
+
+const getLaptopDataViaProxy = (nextURL, availableProxyServer, processId, laptopDatas, categoryPageIsNeeded) => 
+    getHTMLCodeViaProxy(nextURL, availableProxyServer).then((pageBody) => {
+        console.log("getHTMLCodeViaProxy started");
         let nextPageURL;
         if (processId === undefined && categoryPageIsNeeded) {
+            console.log('No processID, category page is needed.');
             let newProcessId = createNewCrawlingProcess(laptopDatas);
             try {
                 nextPageURL = extractLaptopCategoryURL(pageBody);  
                 console.log("Category page is found: ", nextPageURL);
-                getLaptopDataViaProxy(nextPageURL, newProcessId, laptopDatas, false);
+                getLaptopDataViaProxy(nextPageURL, availableProxyServer, newProcessId, laptopDatas, false);
                 return ({"id": newProcessId, "message": "Laptop category page is found, crawling started."});
             } catch (err) {
-                throw new Error(err.message);
+                throw new Error(err);
             }
         } else {
             let process = getCrawlingProcessById(processId);            
@@ -123,10 +130,10 @@ const getLaptopDataViaProxy = (nextURL, processId, laptopDatas, categoryPageIsNe
                     process.status = "in progress";
                 }
                 nextPageURL = MAIN_PAGE_URL + nextPageURL;
-                return getLaptopDataViaProxy(nextPageURL, processId, laptopDatas, false);
+                return getLaptopDataViaProxy(nextPageURL, availableProxyServer, processId, laptopDatas, false);
             }
         }
-    });
+    })
 
 function extractLaptopCategoryURL(mainPageBody) {
     let $ = cheerio.load(mainPageBody);
@@ -252,6 +259,7 @@ function uuidv4() {
 
 module.exports = {
     getLaptopData,
+    getLaptopDataViaProxy,
     checkCrawlingProcess,
     MAIN_PAGE_URL
 };
