@@ -33,25 +33,27 @@ const getHTMLCode = (url) => {
             console.log(proxyNeeded);
             // console.log(Object.keys(res['request']));
             let req = res['request'];
-            if (res['statusCode'] == '400' && proxyNeeded != true) {
-                console.log('Problem occured. Status code: ');
-                console.log(res['statusCode']);                
-                console.log(req['headers']);
-                console.log(res['body']);
-                console.log("We are searching for a proxy server...");
-                proxyNeeded = true;
-                getAvailableProxyServers().then((response) => {
-                    let availableProxyServers = response;
-                    console.log("We are in spider.js. Available proxy servers: " + availableProxyServers.length.toString());
-                    proxyUrl = availableProxyServers[0];
-                    console.log("We are starting getHTMLCode() function again.")
-                    return getHTMLCode(url);
-                }).catch((err) => {
-                    return reject("Proxy servers are not available.");
-                });
-            } else if (res['statusCode'] == '400' && proxyNeeded == true){
-                proxyNeeded = false;
-                return reject ("The MediaMarkt server or the proxy server is not available.");
+            if (res['statusCode'] == '400') {
+                if (!proxyNeeded) {
+                    console.log('Problem occured. Status code: ');
+                    console.log(res['statusCode']);                
+                    console.log(req['headers']);
+                    console.log(res['body']);
+                    console.log("We are searching for a proxy server...");
+                    proxyNeeded = true;
+                    getAvailableProxyServers().then((response) => {
+                        let availableProxyServers = response;
+                        console.log("We are in spider.js. Available proxy servers: " + availableProxyServers.length.toString());
+                        proxyUrl = availableProxyServers[0];
+                        console.log("We are starting getHTMLCode() function again.")
+                        return getHTMLCode(url);
+                    }).catch((err) => {
+                        return reject("Proxy servers are not available.");
+                    });
+                } else {
+                    proxyNeeded = false;
+                    return reject ("The MediaMarkt server or the proxy server is not available.");
+                }
             } else {
                 resolve(body);
             }
