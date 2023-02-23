@@ -24,6 +24,7 @@ const getHTMLCode = (url) => {
     }
 
     return new Promise((resolve, reject) => {
+        console.log(actualURL);
         request(actualURL, function (err, res, body) {
             if (err) {
                 return reject (err);
