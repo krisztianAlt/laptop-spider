@@ -55,6 +55,7 @@ const getHTMLCode = (url) => {
                     return reject ("The MediaMarkt server or the proxy server is not available.");
                 }
             } else {
+                console.log("Resolve body point");
                 resolve(body);
             }
         })
