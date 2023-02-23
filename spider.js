@@ -38,12 +38,17 @@ const getHTMLCode = (url) => {
                 console.log(res['body']);
                 console.log("We are searching for a proxy server...");
                 proxyNeeded = true;
-                let availableProxyServers = getAvailableProxyServers();
-                console.log("We are in spider.js. Available proxy servers: " + availableProxyServers.length.toString());
-                proxyUrl = availableProxyServers[0];
-                console.log("We are starting getHTMLCode() function again.")
-                return getHTMLCode(url);
+                getAvailableProxyServers().then((response) => {
+                    let availableProxyServers = response;
+                    console.log("We are in spider.js. Available proxy servers: " + availableProxyServers.length.toString());
+                    proxyUrl = availableProxyServers[0];
+                    console.log("We are starting getHTMLCode() function again.")
+                    return getHTMLCode(url);
+                }).catch((err) => {
+                    return reject("Proxy servers are not available.");
+                });
             } else if (res['statusCode'] == '400' && proxyNeeded){
+                proxyNeeded = false;
                 return reject ("The MediaMarkt server or the proxy server is not available.");
             } else {
                 resolve(body);
