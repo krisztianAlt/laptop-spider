@@ -29,7 +29,8 @@ const getHTMLCode = (url) => {
             if (err) {
                 return reject (err);
             }
-            
+            console.log(res['statusCode']);
+            console.log(proxyNeeded);
             // console.log(Object.keys(res['request']));
             let req = res['request'];
             if (res['statusCode'] == '400' && !proxyNeeded) {
