@@ -200,11 +200,6 @@ app.ui = {
         startScrappingButton.setAttribute("disabled", "disabled");
     },
 
-    deactivateStartViaProxyButton: function(){
-        let startScrappingButton = document.querySelector(".button-proxy-div button");
-        startScrappingButton.setAttribute("disabled", "disabled");
-    },
-
     showSpinner: function() {
         let spinner = document.querySelector(".spinner-div");
         spinner.classList.remove("visually-hidden");
@@ -239,16 +234,6 @@ app.ui = {
             app.ui.showSpinner();
             app.ui.showCrawlingInfoArea();
             app.data_handler.startCrawling();
-        })
-    },
-
-    initCrawlingViaProxyButton: function(){
-        let startScrappingButton = document.querySelector(".button-proxy-div button");
-        startScrappingButton.addEventListener("click", function(ev){
-            app.ui.deactivateStartViaProxyButton();
-            app.ui.showSpinner();
-            app.ui.showCrawlingInfoArea();
-            app.data_handler.startCrawlingViaProxy();
         })
     }
 

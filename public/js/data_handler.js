@@ -20,25 +20,6 @@ app.data_handler = {
         })
     },
 
-    startCrawlingViaProxy: function(){
-        $.ajax({
-            url: '/laptopsviaproxy',
-            type: 'GET',
-            success: function(response) {
-                let resp = JSON.parse(response);
-                let crawlingProcessId = resp.processId;
-                let message =  resp.message;
-                app.ui.showCrawingStatusMessage(message);
-                app.data_handler.checkCrawlingProcess(crawlingProcessId);
-            },
-            error: function(err) {
-                let errorMessage = JSON.parse(err.responseText);
-                app.ui.showErrorMessage(errorMessage.error);
-                app.ui.resetInfoArea();
-            }
-        })
-    },
-
     checkCrawlingProcess: function(crawlingProcessId){
         let dataPackage = {"process_id": crawlingProcessId};
         setTimeout(function(){
