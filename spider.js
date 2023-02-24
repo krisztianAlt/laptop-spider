@@ -31,7 +31,7 @@ const getHTMLCode = async (url) => {
             });
         });
     } catch (err_1) {
-        throw new Error("Server problem in getHTMLCode() function.");
+        return new Error("Server problem in getHTMLCode() function.");
     }
 };
 
@@ -68,7 +68,7 @@ const getLaptopData = (nextURL, processId, laptopDatas, categoryPageIsNeeded) =>
             }
         }
     }).catch((err) => {
-        throw new Error("Server problem in getLaptopData() function.");
+        return new Error("Server problem in getLaptopData() function.");
     });
 
 const getHTMLCodeViaProxy = (url, availableProxyServer) => {
