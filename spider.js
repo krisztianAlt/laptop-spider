@@ -26,7 +26,7 @@ const getHTMLCode = (url) => {
                 return reject("Status code: 400. The MediaMarkt server is not available.");
             }
 
-            resolve(body);
+            return resolve(body);
         });
     });
 }
