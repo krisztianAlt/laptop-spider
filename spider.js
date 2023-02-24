@@ -127,6 +127,9 @@ const getLaptopDataViaProxy = (nextURL, availableProxyServer, processId, laptopD
                 return getLaptopDataViaProxy(nextPageURL, availableProxyServer, processId, laptopDatas, false);
             }
         }
+    }).catch((err) => {
+        console.log("We are in getLaptopDataViaProxy");
+        console.log(err);
     })
 
 function extractLaptopCategoryURL(mainPageBody) {
