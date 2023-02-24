@@ -190,30 +190,28 @@ function getCrawlingProcessById(id){;
 }
 
 function checkCrawlingProcess(processId){
-    try {
-        let process = getCrawlingProcessById(processId);
-        if (process.status === "failed") {
-            throw new Error("Crawling process failed.");
-        } else {
-            let response = {
-                "processId": process.id,
-                "status": process.status,
-            }
-            if (process.status === "finished"){
-                response.message = "Crawling is over.";
-                response.laptopDataPackage = process.laptopDatas;
-                deleteCrawlingProcessById(processId);
-            } else {
-                response.message = "The examination of " + process.finished_pages + " pages has been completed.";
-            }
-            return response;
-        }   
-    } catch (error) {
-        console.log("We are in checkCrawlingProcess funtcion");
-        console.log(error);
+    let process = getCrawlingProcessById(processId);
+    if (typeof process === 'undefined') {
         throw new Error("Crawling process failed. (Process does not exist.)");
+    } else if(process === null){
+        throw new Error("Crawling process failed. (Process exists but its value is null.)");;
     }
-    
+    if (process.status === "failed") {
+        throw new Error("Crawling process failed. (Process exists but its status is failed.)");
+    } else {
+        let response = {
+            "processId": process.id,
+            "status": process.status,
+        }
+        if (process.status === "finished"){
+            response.message = "Crawling is over.";
+            response.laptopDataPackage = process.laptopDatas;
+            deleteCrawlingProcessById(processId);
+        } else {
+            response.message = "The examination of " + process.finished_pages + " pages has been completed.";
+        }
+        return response;
+    }
 }
 
 function deleteCrawlingProcessById(processId){
