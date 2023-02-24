@@ -68,7 +68,7 @@ const getLaptopData = (nextURL, processId, laptopDatas, categoryPageIsNeeded) =>
             }
         }
     }).catch((err) => {
-        throw new Error(err);
+        throw new Error("Server problem.");
     });
 
 const getHTMLCodeViaProxy = (url, availableProxyServer) => {
