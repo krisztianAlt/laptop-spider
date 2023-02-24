@@ -32,49 +32,43 @@ const getHTMLCode = (url) => {
 }
 
 const getLaptopData = function(nextURL, processId, laptopDatas, categoryPageIsNeeded){
-    try {
-        
-        getHTMLCode(nextURL).then((pageBody) => {
-            let nextPageURL;
-            if (processId === undefined && categoryPageIsNeeded) {
-                let newProcessId = createNewCrawlingProcess(laptopDatas);
-                try {
-                    nextPageURL = extractLaptopCategoryURL(pageBody);  
-                    console.log("Category page is found: ", nextPageURL);
-                    getLaptopData(nextPageURL, newProcessId, laptopDatas, false);
-                    return ({"id": newProcessId, "message": "Laptop category page is found, crawling started."});
-                } catch (err) {
-                    throw new Error(err);
-                }
-            } else {
-                let process = getCrawlingProcessById(processId);            
-                console.log("Crawling: ", nextURL);
-                nextPageURL = extractLaptopDataFromHTMLCode(pageBody, laptopDatas);
-                process.finished_pages = process.finished_pages + 1;
-                process.laptopDatas = laptopDatas;
-                if (nextPageURL === undefined){
-                    process.status = "finished";
-                    console.log("Crawling is over.");
-                    proxyNeeded = false;
-                    proxyUrl = '';
-                } else {
-                    if (process.status === "started") {
-                        process.status = "in progress";
-                    }
-                    nextPageURL = MAIN_PAGE_URL + nextPageURL;
-                    return getLaptopData(nextPageURL, processId, laptopDatas, false);
-                }
+    getHTMLCode(nextURL).then((pageBody) => {
+        let nextPageURL;
+        if (processId === undefined && categoryPageIsNeeded) {
+            let newProcessId = createNewCrawlingProcess(laptopDatas);
+            try {
+                nextPageURL = extractLaptopCategoryURL(pageBody);  
+                console.log("Category page is found: ", nextPageURL);
+                getLaptopData(nextPageURL, newProcessId, laptopDatas, false);
+                return ({"id": newProcessId, "message": "Laptop category page is found, crawling started."});
+            } catch (err) {
+                throw new Error(err);
             }
-        }).catch((err) => {
-            console.log("We are in getLaptopData()");
-            console.log(err);
-            throw new Error(err);
-        })
-    } catch (error) {
-        console.log("We are in getLaptopData(), outer catch");
+        } else {
+            let process = getCrawlingProcessById(processId);            
+            console.log("Crawling: ", nextURL);
+            nextPageURL = extractLaptopDataFromHTMLCode(pageBody, laptopDatas);
+            process.finished_pages = process.finished_pages + 1;
+            process.laptopDatas = laptopDatas;
+            if (nextPageURL === undefined){
+                process.status = "finished";
+                console.log("Crawling is over.");
+                proxyNeeded = false;
+                proxyUrl = '';
+            } else {
+                if (process.status === "started") {
+                    process.status = "in progress";
+                }
+                nextPageURL = MAIN_PAGE_URL + nextPageURL;
+                return getLaptopData(nextPageURL, processId, laptopDatas, false);
+            }
+        }
+    }).catch((err) => {
+        console.log("We are in getLaptopData()");
         console.log(err);
-        throw new Error(err);
-    }
+        // throw new Error(err);
+        return "Mein gott";
+    })
 } 
 
 const getHTMLCodeViaProxy = (url, availableProxyServer) => {
