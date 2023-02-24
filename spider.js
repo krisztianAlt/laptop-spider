@@ -64,7 +64,7 @@ const getLaptopData = (nextURL, processId, laptopDatas, categoryPageIsNeeded) =>
             }
         }
     }).catch((err) => {
-        console("We are in getLaptopData()")
+        console.log("We are in getLaptopData()");
         console.log(err);
     })
 
