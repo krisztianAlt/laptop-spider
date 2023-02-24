@@ -58,6 +58,7 @@ app.get("/laptops", (req, res) => {
         })
     } else {
         getLaptopData(MAIN_PAGE_URL, undefined, laptopDatas, categoryPageIsNeeded).then((response) => {
+            console.log("We are in index.js, getLaptopData's 'then' thread");
             console.log(response);
             console.log(response.message + " Process ID: " + response.id);
             res.status(200);

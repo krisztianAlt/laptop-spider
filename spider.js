@@ -61,7 +61,7 @@ const getLaptopData = function(nextURL, processId, laptopDatas, categoryPageIsNe
         console.log("We are in getLaptopData()");
         console.log(err);
         // throw new Error(err);
-        return "Mein gott";
+        throw "Mein gott";
     })
 } 
 
