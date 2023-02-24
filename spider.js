@@ -8,34 +8,28 @@ const URL_SCHEME = "https:";
 const crawlingProcesses = [];
 
 const getHTMLCode = async (url) => {
-    try {
-        return await new Promise((resolve, reject) => {
-            request(url, function (err, res, body) {
-                if (err) {
-                    return reject(err);
-                }
+    return await new Promise((resolve, reject) => {
+        request(url, function (err, res, body) {
+            if (err) {
+                return reject(err);
+            }
 
+            console.log(res['statusCode']);
+            // console.log(Object.keys(res['request']));
+            let req = res['request'];
+            if (res['statusCode'] == '400') {
+                console.log('Problem occured. Status code: ');
                 console.log(res['statusCode']);
-                // console.log(Object.keys(res['request']));
-                let req = res['request'];
-                if (res['statusCode'] == '400') {
-                    console.log('Problem occured. Status code: ');
-                    console.log(res['statusCode']);
-                    console.log(req['headers']);
-                    console.log(res['body']);
-                    console.log("Maybe search a proxy server.");
-                    return reject("Status code: 400. The MediaMarkt server is not available.");
-                }
+                console.log(req['headers']);
+                console.log(res['body']);
+                console.log("Maybe search a proxy server.");
+                return reject("Status code: 400. The MediaMarkt server is not available.");
+            }
 
-                resolve(body);
-            });
+            resolve(body);
         });
-    } catch (err_1) {
-        console.log("Catch in getHTMLCode()");
-        console.log(err_1);
-        throw new Error("Server problem in getHTMLCode() function.");
-    }
-};
+    });
+}
 
 const getLaptopData = (nextURL, processId, laptopDatas, categoryPageIsNeeded) => 
     getHTMLCode(nextURL).then((pageBody) => {
@@ -69,11 +63,7 @@ const getLaptopData = (nextURL, processId, laptopDatas, categoryPageIsNeeded) =>
                 return getLaptopData(nextPageURL, processId, laptopDatas, false);
             }
         }
-    }).catch((err) => {
-        console.log("Catch is getLaptopData()")
-        console.log(err);
-        throw new Error("Server problem in getLaptopData() function.");
-    });
+    })
 
 const getHTMLCodeViaProxy = (url, availableProxyServer) => {
     console.log('Current proxy: ' + availableProxyServer);
