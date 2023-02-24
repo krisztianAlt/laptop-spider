@@ -8,7 +8,7 @@ app.data_handler = {
             success: function(response) {
                 let resp = JSON.parse(response);
                 let crawlingProcessId = resp.processId;
-                let message =  resp.message;
+                let message = resp.message;
                 app.ui.showCrawingStatusMessage(message);
                 app.data_handler.checkCrawlingProcess(crawlingProcessId);
             },

@@ -36,14 +36,10 @@ const getLaptopData = function(nextURL, processId, laptopDatas, categoryPageIsNe
         let nextPageURL;
         if (processId === undefined && categoryPageIsNeeded) {
             let newProcessId = createNewCrawlingProcess(laptopDatas);
-            try {
-                nextPageURL = extractLaptopCategoryURL(pageBody);  
-                console.log("Category page is found: ", nextPageURL);
-                getLaptopData(nextPageURL, newProcessId, laptopDatas, false);
-                return ({"id": newProcessId, "message": "Laptop category page is found, crawling started."});
-            } catch (err) {
-                throw new Error(err);
-            }
+            nextPageURL = extractLaptopCategoryURL(pageBody);  
+            console.log("Category page is found: ", nextPageURL);
+            getLaptopData(nextPageURL, newProcessId, laptopDatas, false);
+            return ({"id": newProcessId, "message": "Laptop category page is found, crawling started."}); 
         } else {
             let process = getCrawlingProcessById(processId);            
             console.log("Crawling: ", nextURL);
@@ -53,8 +49,6 @@ const getLaptopData = function(nextURL, processId, laptopDatas, categoryPageIsNe
             if (nextPageURL === undefined){
                 process.status = "finished";
                 console.log("Crawling is over.");
-                proxyNeeded = false;
-                proxyUrl = '';
             } else {
                 if (process.status === "started") {
                     process.status = "in progress";
