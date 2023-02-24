@@ -195,21 +195,25 @@ function getCrawlingProcessById(id){;
 
 function checkCrawlingProcess(processId){
     let process = getCrawlingProcessById(processId);
-    if (process.status === "failed") {
-        throw new Error("Crawling process failed.");
-    } else {
-        let response = {
-            "processId": process.id,
-            "status": process.status,
-        }
-        if (process.status === "finished"){
-            response.message = "Crawling is over.";
-            response.laptopDataPackage = process.laptopDatas;
-            deleteCrawlingProcessById(processId);
+    if (process.status) {
+        if (process.status === "failed") {
+            throw new Error("Crawling process failed.");
         } else {
-            response.message = "The examination of " + process.finished_pages + " pages has been completed.";
+            let response = {
+                "processId": process.id,
+                "status": process.status,
+            }
+            if (process.status === "finished"){
+                response.message = "Crawling is over.";
+                response.laptopDataPackage = process.laptopDatas;
+                deleteCrawlingProcessById(processId);
+            } else {
+                response.message = "The examination of " + process.finished_pages + " pages has been completed.";
+            }
+            return response;
         }
-        return response;
+    } else {
+        throw new Error("Crawling process failed. (Process status value dot not exist.)");
     }
 }
 
