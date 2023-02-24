@@ -57,11 +57,6 @@ const getLaptopData = function(nextURL, processId, laptopDatas, categoryPageIsNe
                 return getLaptopData(nextPageURL, processId, laptopDatas, false);
             }
         }
-    }).catch((err) => {
-        console.log("We are in getLaptopData()");
-        console.log(err);
-        // throw new Error(err);
-        throw "Mein gott";
     })
 } 
 
@@ -190,10 +185,11 @@ function getCrawlingProcessById(id){;
 }
 
 function checkCrawlingProcess(processId){
+    console.log("checkCrawlingProcess started");
     let process = getCrawlingProcessById(processId);
     if (typeof process === 'undefined') {
         throw new Error("Crawling process failed. (Process does not exist.)");
-    } else if(process === null){
+    } else if (process === null){
         throw new Error("Crawling process failed. (Process exists but its value is null.)");;
     }
     if (process.status === "failed") {
