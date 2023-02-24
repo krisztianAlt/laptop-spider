@@ -31,7 +31,7 @@ const getHTMLCode = (url) => {
     });
 }
 
-const getLaptopData = function(nextURL, processId, laptopDatas, categoryPageIsNeeded){
+function getLaptopData(nextURL, processId, laptopDatas, categoryPageIsNeeded){
     getHTMLCode(nextURL).then((pageBody) => {
         let nextPageURL;
         if (processId === undefined && categoryPageIsNeeded) {
