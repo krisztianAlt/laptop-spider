@@ -57,16 +57,24 @@ app.get("/laptops", (req, res) => {
             });
         })
     } else {
-        getLaptopData(MAIN_PAGE_URL, undefined, laptopDatas, categoryPageIsNeeded).then((response) => {
-            console.log(response.message + " Process ID: " + response.id);
-            res.status(200);
-            res.send(JSON.stringify({"processId" : response.id, "message": response.message}));
-        }).catch((err) => {
-            console.log("Problem occured. We are in index.js.");
-            console.error(err);
+        try {
+            getLaptopData(MAIN_PAGE_URL, undefined, laptopDatas, categoryPageIsNeeded).then((response) => {
+                console.log(response.message + " Process ID: " + response.id);
+                res.status(200);
+                res.send(JSON.stringify({"processId" : response.id, "message": response.message}));
+            }).catch((err) => {
+                console.log("Problem occured. We are in index.js.");
+                console.error(err);
+                res.status(404);
+                res.send(JSON.stringify({"error": "Sorry, problem occured. Please, try later!"}));
+            });    
+        } catch (error) {
+            console.log("We are in index.js");
+            console.log(error);
             res.status(404);
-            res.send(JSON.stringify({"error": "Sorry, problem occured. Please, try later!"}));
-        });
+            res.send(JSON.stringify({"error": "Oh, noooo... Sorry, problem occured. Please, try later!"}));
+        }
+        
     }
 
     /*
