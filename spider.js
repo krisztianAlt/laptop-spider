@@ -63,6 +63,9 @@ const getLaptopData = (nextURL, processId, laptopDatas, categoryPageIsNeeded) =>
                 return getLaptopData(nextPageURL, processId, laptopDatas, false);
             }
         }
+    }).catch((err) => {
+        console("We are in getLaptopData()")
+        console.log(err);
     })
 
 const getHTMLCodeViaProxy = (url, availableProxyServer) => {
@@ -127,9 +130,6 @@ const getLaptopDataViaProxy = (nextURL, availableProxyServer, processId, laptopD
                 return getLaptopDataViaProxy(nextPageURL, availableProxyServer, processId, laptopDatas, false);
             }
         }
-    }).catch((err) => {
-        console.log("We are in getLaptopDataViaProxy");
-        console.log(err);
     })
 
 function extractLaptopCategoryURL(mainPageBody) {
