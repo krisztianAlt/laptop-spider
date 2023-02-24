@@ -62,7 +62,7 @@ app.get("/laptops", (req, res) => {
             res.status(200);
             res.send(JSON.stringify({"processId" : response.id, "message": response.message}));
         }).catch((err) => {
-            console.log("Problem occured.");
+            console.log("Problem occured. We are in index.js.");
             console.error(err);
             res.status(404);
             res.send(JSON.stringify({"error": "Sorry, problem occured. Please, try later!"}));
