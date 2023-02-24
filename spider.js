@@ -7,8 +7,8 @@ const URL_SCHEME = "https:";
 
 const crawlingProcesses = [];
 
-const getHTMLCode = async (url) => {
-    return await new Promise((resolve, reject) => {
+const getHTMLCode = (url) => {
+    return new Promise((resolve, reject) => {
         request(url, function (err, res, body) {
             if (err) {
                 return reject(err);
