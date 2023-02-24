@@ -25,7 +25,7 @@ const getLaptopDataViaProxy = spiderModule.getLaptopDataViaProxy;
 const checkCrawlingProcess = spiderModule.checkCrawlingProcess;
 const MAIN_PAGE_URL = spiderModule.MAIN_PAGE_URL;
 
-var proxyNeeded = true;
+var proxyNeeded = false;
 const proxyModule = require("./proxy_spider.js");
 const getAvailableProxyServer = proxyModule.getAvailableProxyServer;
 
