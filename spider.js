@@ -31,34 +31,42 @@ const getHTMLCode = (url) => {
     });
 }
 
-const getLaptopData = (nextURL, processId, laptopDatas, categoryPageIsNeeded) => {
+const getLaptopData = (nextURL, processId, laptopDatas, categoryPageIsNeeded) => 
     getHTMLCode(nextURL).then((pageBody) => {
         let nextPageURL;
-        if (processId === undefined && categoryPageIsNeeded) {
-            let newProcessId = createNewCrawlingProcess(laptopDatas);
-            nextPageURL = extractLaptopCategoryURL(pageBody);  
-            console.log("Category page is found: ", nextPageURL);
-            getLaptopData(nextPageURL, newProcessId, laptopDatas, false);
-            return ({"id": newProcessId, "message": "Laptop category page is found, crawling started."}); 
-        } else {
-            let process = getCrawlingProcessById(processId);            
-            console.log("Crawling: ", nextURL);
-            nextPageURL = extractLaptopDataFromHTMLCode(pageBody, laptopDatas);
-            process.finished_pages = process.finished_pages + 1;
-            process.laptopDatas = laptopDatas;
-            if (nextPageURL === undefined){
-                process.status = "finished";
-                console.log("Crawling is over.");
+        try {
+            if (processId === undefined && categoryPageIsNeeded) {
+                let newProcessId = createNewCrawlingProcess(laptopDatas);
+                nextPageURL = extractLaptopCategoryURL(pageBody);  
+                console.log("Category page is found: ", nextPageURL);
+                getLaptopData(nextPageURL, newProcessId, laptopDatas, false);
+                return ({"id": newProcessId, "message": "Laptop category page is found, crawling started."}); 
             } else {
-                if (process.status === "started") {
-                    process.status = "in progress";
+                let process = getCrawlingProcessById(processId);            
+                console.log("Crawling: ", nextURL);
+                nextPageURL = extractLaptopDataFromHTMLCode(pageBody, laptopDatas);
+                process.finished_pages = process.finished_pages + 1;
+                process.laptopDatas = laptopDatas;
+                if (nextPageURL === undefined){
+                    process.status = "finished";
+                    console.log("Crawling is over.");
+                } else {
+                    if (process.status === "started") {
+                        process.status = "in progress";
+                    }
+                    nextPageURL = MAIN_PAGE_URL + nextPageURL;
+                    return getLaptopData(nextPageURL, processId, laptopDatas, false);
                 }
-                nextPageURL = MAIN_PAGE_URL + nextPageURL;
-                return getLaptopData(nextPageURL, processId, laptopDatas, false);
             }
+        } catch (error) {
+            console.log("We are in spider.js, getLaptopData()/getHTMLCode()/then catch");
+            console.log(error);
         }
-    })
-} 
+    }).catch((err) => {
+        console.log("We are in spider.js, getLaptopData() catch");
+        console.log(err);
+    });
+ 
 
 const getHTMLCodeViaProxy = (url, availableProxyServer) => {
     console.log('Current proxy: ' + availableProxyServer);
@@ -188,11 +196,14 @@ function checkCrawlingProcess(processId){
     console.log("checkCrawlingProcess started");
     let process = getCrawlingProcessById(processId);
     if (typeof process === 'undefined') {
+        console.log("process is undefined");
         throw new Error("Crawling process failed. (Process does not exist.)");
     } else if (process === null){
+        console.log("process is null");
         throw new Error("Crawling process failed. (Process exists but its value is null.)");;
     }
     if (process.status === "failed") {
+        console.log("process status is failed");
         throw new Error("Crawling process failed. (Process exists but its status is failed.)");
     } else {
         let response = {
