@@ -128,6 +128,7 @@ const getLaptopDataViaProxy = (nextURL, availableProxyServer, processId, laptopD
                     process.status = "in progress";
                 }
                 nextPageURL = MAIN_PAGE_URL + nextPageURL;
+                console.log("nextPageURL: " + nextPageURL);
                 return getLaptopDataViaProxy(nextPageURL, availableProxyServer, processId, laptopDatas, false);
             }
         }
