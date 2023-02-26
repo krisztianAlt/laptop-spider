@@ -55,6 +55,7 @@ const getLaptopData = (nextURL, processId, laptopDatas, categoryPageIsNeeded) =>
                         process.status = "in progress";
                     }
                     nextPageURL = MAIN_PAGE_URL + nextPageURL;
+                    console.log("nextPageURL: " + nextPageURL);
                     return getLaptopData(nextPageURL, processId, laptopDatas, false);
                 }
             }
